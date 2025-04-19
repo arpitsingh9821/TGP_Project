@@ -5,7 +5,8 @@ const app = express();
 app.use(express.json());
 
 
-app.use('/users', require('./src/Routes/users'));
+app.use('/api/auth', require('./src/Routes/Auth'));
+
 
 app.get('/', (req, res) => {
   res.send('TGP Backend API Running');
