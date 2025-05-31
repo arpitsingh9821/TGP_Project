@@ -19,14 +19,15 @@ router.post("/signup/:role", async (req, res) => {
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-
         db.get(`SELECT * FROM Users WHERE email = ?`, [email], (err, user) => {
-            if (err) return res.status(500).json({ success: false, message: "Database error", err });
-
+            if (err) {
+                
+                return res.status(500).json({ success: false, message: "Database error", err });
+            }
+ 
             if (user) {
                 return res.status(400).json({ success: false, message: "User already exists" });
             }
-
             db.run(
                 `INSERT INTO Users (name, email, password, role) VALUES (?, ?, ?, ?)`,
                 [name, email, hashedPassword, role],

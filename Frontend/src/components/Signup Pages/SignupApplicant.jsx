@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 const SignupApplicant = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const res = await axios.post("http://localhost:8080/api/auth/signup/applicant", formData);
+    setMessage(res.data.message || "Signup successful");
+  } catch (error) {
+    console.error(error);
+    setMessage(error.response?.data?.message || "Signup failed");
+  }
+};
+
   return (
     <div className="max-w-lg mx-auto mt-20 p-8 bg-white rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Applicant Signup</h2>
-      <form>
+
+      {message && (
+        <div className="mb-4 text-center text-sm text-red-600 font-medium">{message}</div>
+      )}
+
+      <form onSubmit={handleSubmit}>
         {/* Name row */}
         <div className="flex items-center mb-6">
           <label htmlFor="name" className="w-36 text-gray-700 font-semibold">
@@ -16,7 +46,9 @@ const SignupApplicant = () => {
             type="text"
             placeholder="Enter your full name"
             required
-            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.name}
+            onChange={handleChange}
+            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
@@ -31,7 +63,9 @@ const SignupApplicant = () => {
             type="email"
             placeholder="Enter your email"
             required
-            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.email}
+            onChange={handleChange}
+            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
@@ -46,7 +80,9 @@ const SignupApplicant = () => {
             type="password"
             placeholder="Create a password"
             required
-            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.password}
+            onChange={handleChange}
+            className="flex-grow px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
@@ -54,7 +90,7 @@ const SignupApplicant = () => {
         <div className="text-center">
           <button
             type="submit"
-            className="px-12 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 transition"
+            className="px-12 py-3 bg-green-600 text-cyan-50 font-semibold rounded-md shadow-md hover:bg-green-500 transition"
           >
             Signup
           </button>
