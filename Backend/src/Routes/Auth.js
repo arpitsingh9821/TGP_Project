@@ -42,6 +42,7 @@ router.post("/signup/:role", async (req, res) => {
                         success: true,
                         message: `${role} registered successfully`,
                         token,
+                        role,
                     });
                 }
             );
@@ -52,31 +53,50 @@ router.post("/signup/:role", async (req, res) => {
 });
 
 // Login Route
-router.post("/login/:role", (req, res) => {
-    const { email, password } = req.body;
-    const role = req.params.role.toLowerCase();
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
 
-    db.get(`SELECT * FROM Users WHERE email = ? AND role = ?`, [email, role], async (err, user) => {
-        if (err) return res.status(500).json({ success: false, message: "Database error", err });
+  db.get(`SELECT * FROM Users WHERE email = ?`, [email], async (err, user) => {
+    if (err) {
+      return res.status(500).json({ success: false, message: "Database error", err });
+    }
 
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-        const passwordMatch = await bcrypt.compare(password, user.password);
+    try {
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        return res.status(401).json({ success: false, message: "Incorrect password" });
+      }
 
-        if (!passwordMatch) {
-            return res.status(401).json({ success: false, message: "Incorrect password" });
+      const token = jwt.sign(
+        {
+          id: user.id,
+          role: user.role,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: `${user.role} logged in successfully`,
+        token,
+        role: user.role,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role
         }
-
-        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
-        });
-
-        res.status(200).json({
-            success: true,
-            message: `${role} logged in successfully`,
-            token,
-        });
-    });
+      });
+    } catch (error) {
+      return res.status(500).json({ success: false, message: "Internal server error", error });
+    }
+  });
 });
+
 
 module.exports = router;

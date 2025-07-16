@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+
 
 const SignupApplicant = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,19 +25,28 @@ const SignupApplicant = () => {
   try {
     const res = await axios.post("http://localhost:8080/api/auth/signup/applicant", formData);
     setMessage(res.data.message || "Signup successful");
+       
   } catch (error) {
     console.error(error);
     setMessage(error.response?.data?.message || "Signup failed");
   }
 };
 
-  return (
+  return (<>
+    <div className="mb-4 text-center text-sm font-medium"> 
+      <Link to="/">
+      <button className="absolute top-4 left-3 px-7 py-2 rounded-full text-white border-green-300 border-2 
+            flex items-center text-xl gap-1 bg-gradient-to-r from-green-300 to-green-600 
+            hover:border-green-100 hover:scale-110 transition-all duration-500 
+            hover:shadow-[0_0_20px_5px_rgba(134,239,172,0.8)]">Back</button>
+    </Link>
+    </div>
     <div className="max-w-lg mx-auto mt-20 p-8 bg-white rounded-lg shadow-lg">
       <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Applicant Signup</h2>
 
       {message && (
-        <div className="mb-4 text-center text-sm text-red-600 font-medium">{message}</div>
-      )}
+  <div className="mb-4 text-center text-sm text-red-600 font-medium">{message}</div>
+)}
 
       <form onSubmit={handleSubmit}>
         {/* Name row */}
@@ -90,13 +104,24 @@ const SignupApplicant = () => {
         <div className="text-center">
           <button
             type="submit"
-            className="px-12 py-3 bg-green-600 text-cyan-50 font-semibold rounded-md shadow-md hover:bg-green-500 transition"
+            className="px-12 py-3 bg-green-600 text-cyan-50 font-semibold border-green-300 border-2 
+             items-center text-xl gap-1 rounded-md shadow-md bg-gradient-to-r from-green-300 to-green-600 
+            hover:border-green-100 hover:scale-110 transition-all duration-500 hover:shadow-[0_0_20px_5px_rgba(134,239,172,0.8)]"
           >
             Signup
           </button>
         </div>
+        
       </form>
+
     </div>
+         <div className="w-fit mx-auto mt-4 left-3 px-7 py-2 rounded-md text-white border-green-300 border-2 
+            flex items-center text-xl gap-1 bg-gradient-to-r from-green-300 to-green-600 
+            hover:border-green-100 hover:scale-110 transition-all duration-500 
+            hover:shadow-[0_0_20px_5px_rgba(134,239,172,0.8)]"><Link to="/Login"><button
+            >Go To Login</button></Link></div>
+
+    </>
   );
 };
 

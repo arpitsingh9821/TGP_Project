@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
@@ -18,7 +18,9 @@ const Navbar = () => {
     <nav className="bg-white shadow-md p-4 flex justify-between items-center">
       <div className="text-xl font-bold text-blue-600">
       
-        <span className="hidden md:block text-black font-special ">Travel Grants Portal</span>
+       <span className="hidden md:block text-black font-special">Travel Grants Portal</span>
+<span className="block md:hidden text-black font-special">TGP</span>
+
       </div>
 
       <div className="relative space-x-4">
@@ -43,9 +45,9 @@ const Navbar = () => {
           </div>
         )}
 
-        <button className="px-4 py-2 border border-green-500 text-green-500 rounded-lg hover:bg-blue-100 transition">
+        <Link to="/Login"><button className="px-4 py-2 border border-green-500 text-green-500 rounded-lg hover:bg-blue-100 transition">
           Login
-        </button>
+        </button></Link>
       </div>
     </nav>
   );
