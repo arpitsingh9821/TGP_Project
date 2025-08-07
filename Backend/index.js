@@ -19,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', require('./src/Routes/Auth'));
 app.use('/api/upload', require('./src/Routes/uploadRoute')); 
 
+
 app.get('/', (req, res) => {
   res.send('TGP Backend API Running');
 });

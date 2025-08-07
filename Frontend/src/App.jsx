@@ -12,6 +12,7 @@ import DiscommDash from './components/Dashboards/DiscommDashboard/DiscommDash.js
 import AdminDash from './components/Dashboards/Admin Dashboard/AdminDash.jsx';
 import AppcomDash from './components/Dashboards/Appcom Dashboard/AppcomDash.jsx';
 import ApplicationForm from './components/Dashboards/Application/ApplicationForm.jsx';
+import ApplicationDetail from './components/Dashboards/Appcom Dashboard/AppcomDetail.jsx';
 function App() {
   const { isAuthenticated } = useAuth();
 
@@ -31,6 +32,8 @@ function App() {
         <Route path="/Login/DiscommDash" element={isAuthenticated ? <DiscommDash /> : <Login />} />
         <Route path="/Login/AdminDash" element={isAuthenticated ? <AdminDash /> : <Login />} />
         <Route path="/Login/AppcomDash" element={isAuthenticated ? <AppcomDash /> : <Login />} />
+        <Route path="/Login/AppcomDash/application/:uid" element={isAuthenticated ? <ApplicationDetail /> : <Login />} />
+
       </Routes>
     </Router>
   );

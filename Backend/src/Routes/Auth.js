@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
-
+const authenticate = require('./uploadRoute');
 const router = express.Router();
 const db = new sqlite3.Database(path.resolve(__dirname, "../../../database/tgp.db"));
 
@@ -97,6 +97,7 @@ router.post("/login", (req, res) => {
     }
   });
 });
+
 
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from "react-router-dom";
 
 const ApplicationForm = () => {
   const [title, setTitle] = useState('');
@@ -37,6 +38,16 @@ const ApplicationForm = () => {
   };
 
   return (
+    <>
+    <Link to="/">
+        <button className="absolute top-4 left-3 px-7 py-2 rounded-full text-white border-green-300 border-2 
+              flex items-center text-xl gap-1 bg-gradient-to-r from-green-300 to-green-600 
+              hover:border-green-100 hover:scale-110 transition-all duration-500 
+              hover:shadow-[0_0_20px_5px_rgba(134,239,172,0.8)]">
+          Back
+        </button>
+      </Link>
+
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 py-8">
       <form
         onSubmit={handleSubmit}
@@ -101,6 +112,7 @@ const ApplicationForm = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 

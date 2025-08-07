@@ -28,6 +28,8 @@ const LoginPage = () => {
       if (role === "applicant") {
   console.log("Navigating to Applicant Dashboard");
   navigate("/Login/AppcntDash");
+
+
 }
  else if (role === "discomm") {
         navigate("/Login/DiscommDash");
