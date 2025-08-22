@@ -84,19 +84,19 @@ router.get('/submitted', authenticate, (req, res) => {
     }
   );
 });
+
 // Fetch all approved applications
 router.get('/approved', authenticate, (req, res) => {
-    db.all(
-      `SELECT * FROM Applications WHERE status = 'Approved' ORDER BY uid DESC`,
+  db.all(
+    `SELECT * FROM Applications WHERE status = 'Approved' ORDER BY uid DESC`,
     (err, rows) => {
       if (err) {
         return res.status(500).json({ message: "Database error", detail: err.message });
       }
       res.json({ applications: rows });
-   }
-);
+    }
+  );
 });
-
 
 // Approve application by uid
 router.post('/approve/:uid', authenticate, (req, res) => {
@@ -115,6 +115,7 @@ router.post('/approve/:uid', authenticate, (req, res) => {
     }
   );
 });
+
 // Fetch application by UID
 router.get('/application/:uid', authenticate, (req, res) => {
   const uid = req.params.uid;
@@ -126,8 +127,86 @@ router.get('/application/:uid', authenticate, (req, res) => {
       return res.status(404).json({ message: 'Application not found' });
     }
     res.json({ application: row });
+    console.log("Application details fetched successfully");
+    console.log(row); 
   });
 });
 
+// Reject application by uid
+router.post('/reject/:uid', authenticate, (req, res) => {
+  const uid = req.params.uid;
+  db.run(
+    `UPDATE Applications SET status = 'Rejected' WHERE uid = ?`,
+    [uid],
+    function (err) {
+      if (err) {
+        return res.status(500).json({ message: "Rejection failed", detail: err.message });
+      }
+      if (this.changes === 0) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      res.json({ message: "Application rejected" });
+    }
+  );
+});
+
+// Fetch comments for an application
+router.get('/comments/:applicationId', authenticate, (req, res) => {
+  const { applicationId } = req.params;
+
+  const query = `
+    SELECT c.id, c.comment_text, c.created_at, u.name AS user_name
+    FROM AppComments c
+    LEFT JOIN Users u ON c.user_id = u.id
+    WHERE c.application_id = ?
+    ORDER BY c.created_at DESC
+  `;
+
+  db.all(query, [applicationId], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ message: "Failed to fetch comments", detail: err.message });
+    }
+    const comments = rows.map(row => ({
+      ...row,
+      created_at: row.created_at.replace(' ', 'T') + 'Z' 
+    }));
+    res.json({ comments });
+  });
+});
+
+// Add a comment
+router.post('/comment', authenticate, (req, res) => {
+  const { application_id, parent_id, comment_text } = req.body;
+  const user_id = req.user.id; // user from JWT
+
+  if (!application_id || !comment_text) {
+    return res.status(400).json({ message: "application_id and comment_text are required" });
+  }
+
+  const query = `
+    INSERT INTO AppComments (application_id, user_id, parent_id, comment_text)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.run(query, [application_id, user_id, parent_id || null, comment_text], function(err) {
+    if (err) {
+      return res.status(500).json({ message: "Failed to add comment", detail: err.message });
+    }
+
+    // Return the inserted comment so React can update instantly
+    res.status(201).json({
+      message: 'Comment added successfully',
+      comment: {
+        id: this.lastID,
+        application_id,
+        user_id,
+        parent_id: parent_id || null,
+        comment_text,
+        created_at: new Date().toISOString(),
+        user_name: req.user.name || "Anonymous"
+      }
+    });
+  });
+});
 
 module.exports = router;

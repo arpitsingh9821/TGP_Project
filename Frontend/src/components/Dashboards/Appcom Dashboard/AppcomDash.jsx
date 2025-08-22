@@ -79,17 +79,18 @@ const AppcomDash = () => {
                   </a>
                 </div>
                 <div className="mt-3 flex gap-6 items-center">
-                  <button
-                    className="underline text-blue-700 hover:text-blue-900 text-sm"
-                    onClick={() => navigate(`/Login/AppcomDash/application/${app.uid}`)}
-                  >
-                    View Details
-                  </button>
+                  
                 </div>
                 <div className="text-gray-500 text-xs mt-1">
                   Submitted by: {name} <br />
                   Applicant ID: {app.ap_id}
                 </div>
+<button
+                    className="underline text-blue-700 hover:text-blue-900 text-sm"
+                    onClick={() => navigate(`/Login/AppcomDash/application/${app.uid}`)}
+                  >
+                    Read More
+                  </button>
               </div>
             ))
           )}
